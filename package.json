@@ -1,6 +1,6 @@
 {
   "name": "licparse",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "解析工程使用库的License文件",
   "main": "index.js",
   "bin": "./index.js",

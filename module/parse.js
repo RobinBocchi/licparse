@@ -71,32 +71,49 @@ let typeJudge = function(licenseContent) {
 
 module.exports = dir => {
   console.log('开始解析目录：' + dir);
-  let bowerDir = dir + '/bower_components';
-  let infoBower = fs.statSync(bowerDir);
+
   let libPathArray = [];
-  if (infoBower && infoBower.isDirectory()) {
-    console.log('存在bower文件夹, 开始检查...'.green);
-    let bowerArray = findLicenseDirSync(bowerDir);
-    bowerArray.forEach(path => {
-      libPathArray.push(path);
-    });
-    console.log(bowerArray.length + '个文件');
-  } else {
-    console.log('不存在bower文件夹，只检查npm库'.red);
+
+  // bower part
+  try {
+    let bowerDir = dir + '/bower_components';
+    let infoBower = fs.statSync(bowerDir);
+    if (infoBower && infoBower.isDirectory()) {
+      console.log('存在bower文件夹, 开始检查...'.green);
+      let bowerArray = findLicenseDirSync(bowerDir);
+      bowerArray.forEach(path => {
+        libPathArray.push(path);
+      });
+      console.log(bowerArray.length + '个文件');
+    } else {
+      console.log('不存在bower文件夹，只检查npm库'.red);
+    }
+  } catch (error) {
+    console.log('没有bower目录'.gray);
   }
 
-  let npmDir = dir + '/node_modules';
-  let infoNpm = fs.statSync(npmDir);
-  if (infoNpm && infoNpm.isDirectory()) {
-    console.log('存在npm文件夹, 开始检查...'.green);
-    let npmArray = findLicenseDirSync(npmDir);
-    npmArray.forEach(path => {
-      libPathArray.push(path);
-    });
-    console.log(npmArray.length + '个文件');
-  } else {
-    console.log('不存在npm文件夹，只检查npm库'.red);
+  // npm part
+  try {
+    let npmDir = dir + '/node_modules';
+    let infoNpm = fs.statSync(npmDir);
+    if (infoNpm && infoNpm.isDirectory()) {
+      console.log('存在npm文件夹, 开始检查...'.green);
+      let npmArray = findLicenseDirSync(npmDir);
+      npmArray.forEach(path => {
+        libPathArray.push(path);
+      });
+      console.log(npmArray.length + '个文件');
+    } else {
+      console.log('不存在npm文件夹，只检查npm库'.red);
+    }
+  } catch (error) {
+    console.log('没有bower目录'.gray);
   }
+  if (libPathArray.length == 0) {
+    console.log('没有bower目录'.red);
+    return;
+  }
+
   let resultArray = [];
   let countObject = {}; // 用于计数
   libPathArray.forEach(path => {
